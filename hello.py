@@ -1,6 +1,11 @@
 # hello.py: A complete Flask app
 from flask import Flask, request, render_template
+from flask_bootstrap import Bootstrap
+
+# initialize the app
 app = Flask(__name__)
+# initialize bootstrap framework
+bootstrap = Bootstrap(app)
 
 
 # static route
