@@ -4,6 +4,7 @@ from flask_bootstrap import Bootstrap
 
 # initialize the app
 app = Flask(__name__)
+app.config['EXPLAIN_TEMPLATE_LOADING'] = True
 # initialize bootstrap framework
 bootstrap = Bootstrap(app)
 
