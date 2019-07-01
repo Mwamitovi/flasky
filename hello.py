@@ -1,16 +1,16 @@
 # hello.py: A complete Flask app
-from flask import Flask, request
+from flask import Flask, request, render_template
 app = Flask(__name__)
 
 
 # static route
 @app.route('/')
 def index():
-    return '<h1>Hello,World!</h1>'
+    return render_template('index.html')
 
 
 # dynamic route
 @app.route('/user/<name>')
 def user(name):
     user_agent = request.headers.get('User-Agent')
-    return '<h1>Hello, {}!<br/></h1><p>Your browser is {}</p>'.format(name, user_agent)
+    return render_template('user.html', name=name, user_agent=user_agent)
