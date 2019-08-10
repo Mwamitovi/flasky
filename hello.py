@@ -1,20 +1,38 @@
 # hello.py: A complete Flask app
+import os
+
 from flask import Flask, request, render_template, \
     session, redirect, url_for, flash
 from flask_bootstrap import Bootstrap
+from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 
 
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+
 # initialize the app
 app = Flask(__name__)
-app.config['EXPLAIN_TEMPLATE_LOADING'] = True
-app.config['SECRET_KEY'] = \
-    '7\xb2\xad\xf5\x14l\xd8tOP\xf6\n\xe9\xe1\x92q\xbf\xc6\x92_g\xec \xa5'
+
 # initialize bootstrap framework
 bootstrap = Bootstrap(app)
+
+app.config['EXPLAIN_TEMPLATE_LOADING'] = True
+
+# secret key
+app.config['SECRET_KEY'] = '7\xb2\xad\xf5\x14l\xd8tOP\xf6\n\xe9\xe1\x92q\xbf\xc6\x92_g\xec \xa5'
+
+# application database url
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'data.sqlite')
+
+# setting false to use less memory
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# initialize the database
+db = SQLAlchemy(app)
 
 
 # static route
@@ -51,3 +69,23 @@ def internal_server_error(e):
 class NameForm(FlaskForm):
     name = StringField('What is your name?', validators=[DataRequired()])
     submit = SubmitField('Submit')
+
+
+class Role(db.Model):
+    __tablename__ = 'roles'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64))
+    users = db.relationship('User', backref='role')
+
+    def __str__(self):
+        return '<Role %r>' % self.name
+
+
+class User(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+    username = db.Column(db.String(64), unique=True, index=True)
+
+    def __str__(self):
+        return '<User %r>' % self.username
