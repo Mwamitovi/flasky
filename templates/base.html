@@ -4,7 +4,7 @@
 {% block title %}Flasky{% endblock title %}
 
 {% block styles %}
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='bootstrap.min.css') }}"></script>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='bootstrap.min.css') }}">
 {% endblock styles %}
 
 {% block navbar %}
@@ -30,6 +30,15 @@
 {% endblock navbar %}
 
 {% block content %}
+<div class="container">
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% block page_content %}{% endblock %}
+</div>
 {% endblock content %}
 
 {% block scripts %}
