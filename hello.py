@@ -6,6 +6,7 @@ from flask import Flask, request, render_template, \
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
+from flask_migrate import Migrate
 
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
@@ -33,6 +34,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # initialize the database
 db = SQLAlchemy(app)
+
+# initialize migrations
+migrate = Migrate(app, db)
 
 
 # static route
