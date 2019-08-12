@@ -34,11 +34,15 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'da
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # setting SMTP server
-app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
-app.config['MAIL_PASSWORD'] = os.environ.get("MAIL_PASSWORD")
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+
+# setting email message
+app.config['FLASKY_MAIL_SUBJECT_PREFIX'] = '[Flasky]'
+app.config['FLASKY_MAIL_SENDER'] = 'Flasky Admin <flasky@example.com>'
 
 # initialize the database
 db = SQLAlchemy(app)
@@ -122,3 +126,34 @@ class User(db.Model):
 @app.shell_context_processor
 def make_shell_context():
     return dict(db=db, User=User, Role=Role)
+
+
+# email support
+# def send_mail(to, subject, template, **kwargs):
+#     msg = Message(app.config['FLASKY_MAIL_SUBJECT_PREFIX'] + subject), \
+#           sender=app.config['FLASKY_MAIL_SENDER'], recipients=[to])
+#     _body = render_template(template+'.txt', **kwargs)
+#     msg.body =
+#     msg.html = render_template(template + '.html', **kwargs)
+#     mail.send(msg)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
