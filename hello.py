@@ -1,5 +1,7 @@
 # hello.py: A complete Flask app
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 from flask import Flask, request, render_template, \
     session, redirect, url_for, flash
@@ -12,33 +14,28 @@ from flask_mail import Mail, Message
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 
-
-basedir = os.path.abspath(os.path.dirname(__file__))
+from config.config import Config, APP_CONFIG
 
 
 # initialize the app
 app = Flask(__name__)
 
+# app env
+# FLASKY='develolopment'
+app_env = os.getenv("FLASKY")
+
+# app config
+app.config.from_object(APP_CONFIG[app_env])
+
 # initialize bootstrap framework
 bootstrap = Bootstrap(app)
-
-app.config['EXPLAIN_TEMPLATE_LOADING'] = True
-
-# secret key
-app.config['SECRET_KEY'] = '7\xb2\xad\xf5\x14l\xd8tOP\xf6\n\xe9\xe1\x92q\xbf\xc6\x92_g\xec \xa5'
-
-# application database url
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'data.sqlite')
-
-# setting false to use less memory
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # setting SMTP server
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
-app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 
 # setting email message
 app.config['FLASKY_MAIL_SUBJECT_PREFIX'] = '[Flasky]'
@@ -133,7 +130,6 @@ def send_mail(to, subject, template, **kwargs):
     msg = Message(app.config['FLASKY_MAIL_SUBJECT_PREFIX'] + subject),
     sender=app.config['FLASKY_MAIL_SENDER'],
     recipients=[to]
-    )
     msg.body = render_template(template + '.txt', **kwargs)
     msg.html = render_template(template + '.html', **kwargs)
     mail.send(msg)
